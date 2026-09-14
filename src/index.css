@@ -1,0 +1,78 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --color-bg: #fdeed9;
+  --color-body: #fff9f2;
+  --color-body-border: #f8d8b8;
+  --color-display: #2d1b14;
+  --color-display-text: #fff3e4;
+  --color-display-subtext: #e8b98c;
+  --color-num-btn: #fff3e7;
+  --color-num-btn-text: #2d1b14;
+  --color-op-btn: #f4a671;
+  --color-op-btn-text: #2d1b14;
+  --color-equals-btn: #e25b45;
+  --color-equals-btn-text: #fff9f2;
+  --color-accent: #e25b45;
+  --color-accent-soft: #f8d8b8;
+}
+
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  font-family: "Nunito", "Quicksand", system-ui, sans-serif;
+  background-color: var(--color-bg);
+  background-image: radial-gradient(var(--color-body-border) 1.4px, transparent 1.4px);
+  background-size: 22px 22px;
+  color: var(--color-display);
+  transition: background-color 0.5s ease;
+  overscroll-behavior: none;
+}
+
+.font-rounded {
+  font-family: "Quicksand", "Nunito", system-ui, sans-serif;
+}
+
+::selection {
+  background-color: var(--color-accent-soft);
+}
+
+button {
+  touch-action: manipulation;
+}
+
+.btn-press {
+  transition: transform 0.08s ease, filter 0.08s ease, box-shadow 0.08s ease;
+}
+.btn-press:active {
+  transform: translateY(2px) scale(0.98);
+  filter: brightness(0.96);
+}
+
+.scrollbar-none::-webkit-scrollbar {
+  display: none;
+}
+.scrollbar-none {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}
