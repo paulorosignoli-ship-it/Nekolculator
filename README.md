@@ -11,7 +11,7 @@ Built with **React + TypeScript + Vite + Tailwind CSS**.
 - **Financial (Standard)** — loan/mortgage payment (PMT), compound growth & future value, and discount + sales tax.
 - **Financial (HP-style)** — a TVM row (`N`, `I/YR`, `PV`, `PMT`, `FV`) that solves for whichever value you leave blank, plus an optional RPN stack calculator with `ENTER`.
 - **Safe math engine** — a hand-rolled tokenizer + shunting-yard parser + RPN evaluator in `src/lib/calculator.ts`. No `eval()`, anywhere.
-- **Cat sound FX** — meow-ish clicks, an error hiss, and a purr on successful `=`, all synthesized live with the Web Audio API (`src/lib/soundEffects.ts`) — no audio files to ship.
+- **Cat sound FX** — real recorded cat sounds (not synthesized): a random meow on every button press, a hiss/meow error sound on invalid actions (divide by zero, bad domain, etc.), and an ambient purr that plays at random while the app is open. Played through the Web Audio API for low-latency, overlapping playback (`src/lib/soundEffects.ts`), with each theme applying a subtle pitch shift.
 - **Cat paw easter egg** — a paw occasionally swipes in from the edge of the card, purely cosmetic.
 - **Dynamic theme engine** — 7 feline themes (Orange Tabby, Black Void, Siamese Point, Calico, Fluffy White, Tuxedo, Kitten) defined as CSS variables in `src/lib/themes.ts`. A random theme is picked on load; the paw icon in the header cycles through the rest.
 - **Full keyboard support** — digits, numpad, `+ - * /`, `Enter`/`=`, `Escape` (clear), `Backspace`, parentheses.
@@ -45,9 +45,19 @@ src/
   lib/
     calculator.ts           Tokenizer, shunting-yard, RPN evaluator
     financial.ts             PMT / FV / discount+tax / TVM solver
-    soundEffects.ts          Web Audio synthesis
+    soundEffects.ts          Web Audio playback engine for the real cat recordings
+    soundManifest.ts          List of sound file paths — add more here
     themes.ts                 Theme definitions + CSS var application
+public/
+  sounds/
+    clicks/    click-01.mp3 ... click-23.mp3   (played on every button press)
+    errors/    error-01.mp3, error-02.mp3        (played on invalid actions)
+    purr/      purr-01.mp3                        (ambient, plays at random)
 ```
+
+### Adding more sounds later
+
+Drop new files into the matching `public/sounds/` folder, then add their path to the arrays in `src/lib/soundManifest.ts` — nothing else needs to change. Any browser-supported format works (`.mp3` is the safest bet for broad support); if you upload `.wav`/`.m4a` files, convert them to `.mp3` first for consistent file size and playback behavior across browsers.
 
 ## Getting started
 

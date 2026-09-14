@@ -1,12 +1,21 @@
-// Lightweight, dependency-free cat sound synthesis using the Web Audio API.
-// Nothing here loads external audio files — every sound is generated on the fly.
+// Plays the real cat sound recordings shipped in /public/sounds via the Web
+// Audio API. Buffers are fetched + decoded once and cached, then played
+// through BufferSourceNodes so multiple sounds can overlap cleanly even on
+// rapid button presses.
+
+import { CLICK_SOUNDS, ERROR_SOUNDS, PURR_SOUNDS } from "./soundManifest";
+
+function pickRandom<T>(arr: T[]): T | undefined {
+  if (!arr.length) return undefined;
+  return arr[Math.floor(Math.random() * arr.length)];
+}
 
 class CatSoundEngine {
   private ctx: AudioContext | null = null;
   private muted = false;
-  private noiseBuffer: AudioBuffer | null = null;
+  private buffers = new Map<string, AudioBuffer>();
+  private pending = new Map<string, Promise<AudioBuffer | null>>();
 
-  /** Must be called (or triggered indirectly) from within a user gesture the first time. */
   private ensureContext(): AudioContext | null {
     if (typeof window === "undefined") return null;
     if (!this.ctx) {
@@ -28,126 +37,96 @@ class CatSoundEngine {
     return this.muted;
   }
 
-  private getNoiseBuffer(ctx: AudioContext): AudioBuffer {
-    if (this.noiseBuffer) return this.noiseBuffer;
-    const bufferSize = ctx.sampleRate * 0.5;
-    const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
-    const data = buffer.getChannelData(0);
-    for (let i = 0; i < bufferSize; i++) {
-      data[i] = Math.random() * 2 - 1;
-    }
-    this.noiseBuffer = buffer;
-    return buffer;
+  private getBuffer(url: string): Promise<AudioBuffer | null> {
+    const cached = this.buffers.get(url);
+    if (cached) return Promise.resolve(cached);
+    const inFlight = this.pending.get(url);
+    if (inFlight) return inFlight;
+
+    const ctx = this.ensureContext();
+    if (!ctx) return Promise.resolve(null);
+
+    const promise = fetch(url)
+      .then((res) => res.arrayBuffer())
+      .then((data) => ctx.decodeAudioData(data))
+      .then((buf) => {
+        this.buffers.set(url, buf);
+        this.pending.delete(url);
+        return buf;
+      })
+      .catch(() => {
+        this.pending.delete(url);
+        return null;
+      });
+
+    this.pending.set(url, promise);
+    return promise;
   }
 
-  /** A short, playful meow/chirp — randomized pitch, pleasant for rapid button presses. */
+  /** Kick off background loading of every sound so playback is instant once it's needed. */
+  preloadAll() {
+    if (typeof window === "undefined") return;
+    [...CLICK_SOUNDS, ...ERROR_SOUNDS, ...PURR_SOUNDS].forEach((url) => {
+      this.getBuffer(url);
+    });
+  }
+
+  private playBuffer(buffer: AudioBuffer, options: { rate?: number; gain?: number; fadeOutTail?: number } = {}) {
+    const ctx = this.ensureContext();
+    if (!ctx) return;
+    const { rate = 1, gain = 1, fadeOutTail = 0 } = options;
+
+    const source = ctx.createBufferSource();
+    source.buffer = buffer;
+    source.playbackRate.value = rate;
+
+    const gainNode = ctx.createGain();
+    const now = ctx.currentTime;
+    const duration = buffer.duration / Math.max(rate, 0.01);
+
+    gainNode.gain.setValueAtTime(0.0001, now);
+    gainNode.gain.exponentialRampToValueAtTime(gain, now + Math.min(0.03, duration / 4));
+    if (fadeOutTail > 0 && duration > fadeOutTail) {
+      gainNode.gain.setValueAtTime(gain, now + duration - fadeOutTail);
+      gainNode.gain.exponentialRampToValueAtTime(0.0001, now + duration);
+    }
+
+    source.connect(gainNode);
+    gainNode.connect(ctx.destination);
+    source.start(now);
+    source.stop(now + duration + 0.05);
+  }
+
+  /** A random button-click meow. pitchMultiplier comes from the active theme. */
   playClick(pitchMultiplier = 1) {
     if (this.muted) return;
-    const ctx = this.ensureContext();
-    if (!ctx) return;
-    const now = ctx.currentTime;
-
-    const startFreq = (620 + Math.random() * 180) * pitchMultiplier;
-    const dipFreq = (380 + Math.random() * 90) * pitchMultiplier;
-    const endFreq = (720 + Math.random() * 140) * pitchMultiplier;
-
-    const osc = ctx.createOscillator();
-    osc.type = "sine";
-    const gain = ctx.createGain();
-    osc.connect(gain);
-    gain.connect(ctx.destination);
-
-    const dur = 0.11 + Math.random() * 0.05;
-    osc.frequency.setValueAtTime(startFreq, now);
-    osc.frequency.exponentialRampToValueAtTime(Math.max(dipFreq, 40), now + dur * 0.45);
-    osc.frequency.exponentialRampToValueAtTime(Math.max(endFreq, 40), now + dur);
-
-    gain.gain.setValueAtTime(0.0001, now);
-    gain.gain.exponentialRampToValueAtTime(0.16, now + 0.015);
-    gain.gain.exponentialRampToValueAtTime(0.0001, now + dur);
-
-    osc.start(now);
-    osc.stop(now + dur + 0.02);
+    const url = pickRandom(CLICK_SOUNDS);
+    if (!url) return;
+    const jitter = 0.94 + Math.random() * 0.12; // subtle natural variance between presses
+    this.getBuffer(url).then((buf) => {
+      if (buf) this.playBuffer(buf, { rate: pitchMultiplier * jitter, gain: 0.85 });
+    });
   }
 
-  /** A low, warning hiss for errors (e.g. divide by zero). */
+  /** A random error sound for an invalid / illogical calculator action. */
   playError(pitchMultiplier = 1) {
     if (this.muted) return;
-    const ctx = this.ensureContext();
-    if (!ctx) return;
-    const now = ctx.currentTime;
-    const dur = 0.42;
-
-    // Filtered noise = the "hiss" texture
-    const noise = ctx.createBufferSource();
-    noise.buffer = this.getNoiseBuffer(ctx);
-    const bandpass = ctx.createBiquadFilter();
-    bandpass.type = "bandpass";
-    bandpass.frequency.value = 2200 * Math.min(pitchMultiplier, 1.15);
-    bandpass.Q.value = 0.6;
-    const noiseGain = ctx.createGain();
-    noiseGain.gain.setValueAtTime(0.0001, now);
-    noiseGain.gain.exponentialRampToValueAtTime(0.22, now + 0.03);
-    noiseGain.gain.exponentialRampToValueAtTime(0.0001, now + dur);
-    noise.connect(bandpass);
-    bandpass.connect(noiseGain);
-    noiseGain.connect(ctx.destination);
-
-    // Low growl tone underneath
-    const osc = ctx.createOscillator();
-    osc.type = "sawtooth";
-    osc.frequency.setValueAtTime(140 * pitchMultiplier, now);
-    osc.frequency.exponentialRampToValueAtTime(70 * pitchMultiplier, now + dur);
-    const oscGain = ctx.createGain();
-    oscGain.gain.setValueAtTime(0.0001, now);
-    oscGain.gain.exponentialRampToValueAtTime(0.1, now + 0.04);
-    oscGain.gain.exponentialRampToValueAtTime(0.0001, now + dur);
-    osc.connect(oscGain);
-    oscGain.connect(ctx.destination);
-
-    noise.start(now);
-    noise.stop(now + dur + 0.02);
-    osc.start(now);
-    osc.stop(now + dur + 0.02);
+    const url = pickRandom(ERROR_SOUNDS);
+    if (!url) return;
+    this.getBuffer(url).then((buf) => {
+      if (buf) this.playBuffer(buf, { rate: Math.min(1.1, Math.max(0.9, pitchMultiplier)), gain: 0.9 });
+    });
   }
 
-  /** A gentle purring rumble, played briefly after a successful calculation. */
+  /** A random ambient purr, meant to play occasionally and unprompted while the app is open. */
   playPurr(pitchMultiplier = 1) {
     if (this.muted) return;
-    const ctx = this.ensureContext();
-    if (!ctx) return;
-    const now = ctx.currentTime;
-    const dur = 0.85;
-
-    const tone = ctx.createOscillator();
-    tone.type = "sine";
-    tone.frequency.value = 95 * pitchMultiplier;
-
-    const toneGain = ctx.createGain();
-    toneGain.gain.setValueAtTime(0.05, now);
-
-    // LFO to create the "purr" tremolo texture
-    const lfo = ctx.createOscillator();
-    lfo.type = "sine";
-    lfo.frequency.value = 26;
-    const lfoGain = ctx.createGain();
-    lfoGain.gain.value = 0.035;
-    lfo.connect(lfoGain);
-    lfoGain.connect(toneGain.gain);
-
-    const envelope = ctx.createGain();
-    envelope.gain.setValueAtTime(0.0001, now);
-    envelope.gain.exponentialRampToValueAtTime(1, now + 0.15);
-    envelope.gain.exponentialRampToValueAtTime(0.0001, now + dur);
-
-    tone.connect(toneGain);
-    toneGain.connect(envelope);
-    envelope.connect(ctx.destination);
-
-    tone.start(now);
-    lfo.start(now);
-    tone.stop(now + dur + 0.05);
-    lfo.stop(now + dur + 0.05);
+    const url = pickRandom(PURR_SOUNDS);
+    if (!url) return;
+    const rate = Math.min(1.15, Math.max(0.85, pitchMultiplier));
+    this.getBuffer(url).then((buf) => {
+      if (buf) this.playBuffer(buf, { rate, gain: 0.5, fadeOutTail: 0.6 });
+    });
   }
 }
 

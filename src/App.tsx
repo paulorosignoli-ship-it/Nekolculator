@@ -8,6 +8,7 @@ import { FinancialHP } from "./components/Modes/Financial/FinancialHP";
 import { CatPaw, usePawEvent } from "./components/CatPaw";
 import { useTheme } from "./hooks/useTheme";
 import { useSound } from "./hooks/useSound";
+import { useAmbientPurr } from "./hooks/useAmbientPurr";
 import type { CalculatorMode, MascotEmotion } from "./types";
 
 export default function App() {
@@ -17,17 +18,20 @@ export default function App() {
   const [emotion, setEmotion] = useState<MascotEmotion>("idle");
 
   const { pawActive, pawTop } = usePawEvent(!muted);
+  useAmbientPurr(playPurr, !muted);
 
   const handlePress = useCallback(() => {
     playClick();
   }, [playClick]);
 
+  // Only invalid / illogical actions get a reaction sound here — the button
+  // press itself already played a click meow via handlePress, and the purr
+  // is ambient (see useAmbientPurr) rather than tied to a successful "=".
   const handleResult = useCallback(
     (success: boolean) => {
-      if (success) playPurr();
-      else playError();
+      if (!success) playError();
     },
-    [playPurr, playError]
+    [playError]
   );
 
   return (

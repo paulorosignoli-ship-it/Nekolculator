@@ -10,6 +10,10 @@ export function useSound(pitchMultiplier: number) {
   });
 
   useEffect(() => {
+    catSounds.preloadAll();
+  }, []);
+
+  useEffect(() => {
     catSounds.setMuted(muted);
     if (typeof window !== "undefined") {
       window.localStorage.setItem(STORAGE_KEY, muted ? "1" : "0");
