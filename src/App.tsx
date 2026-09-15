@@ -1,21 +1,29 @@
 import { useCallback, useState } from "react";
 import { Header } from "./components/Header";
 import { ModeTabs } from "./components/ModeTabs";
+import { Footer } from "./components/Footer";
+import { LegalPage } from "./components/LegalPage";
+import { CookieConsent } from "./components/CookieConsent";
 import { BasicMode } from "./components/Modes/BasicMode";
 import { ScientificMode } from "./components/Modes/ScientificMode";
 import { FinancialStandard } from "./components/Modes/Financial/FinancialStandard";
-import { FinancialHP } from "./components/Modes/Financial/FinancialHP";
+import { Hp12c } from "./components/Modes/Financial/Hp12c";
 import { CatPaw, usePawEvent } from "./components/CatPaw";
 import { useTheme } from "./hooks/useTheme";
 import { useSound } from "./hooks/useSound";
 import { useAmbientPurr } from "./hooks/useAmbientPurr";
-import type { CalculatorMode, MascotEmotion } from "./types";
+import { useLanguage } from "./lib/i18n";
+import { getLegalContent } from "./content/legal";
+import type { AppView, CalculatorMode, LegalView, MascotEmotion } from "./types";
 
 export default function App() {
-  const { theme, cycleTheme } = useTheme();
+  const { theme, cycleTheme, darkMode, toggleDarkMode } = useTheme();
   const { muted, toggleMuted, playClick, playError, playPurr } = useSound(theme.soundPitch);
+  const { language } = useLanguage();
   const [mode, setMode] = useState<CalculatorMode>("basic");
   const [emotion, setEmotion] = useState<MascotEmotion>("idle");
+  const [view, setView] = useState<AppView>("calculator");
+  const [cookieSettingsOpen, setCookieSettingsOpen] = useState(false);
 
   const { pawActive, pawTop } = usePawEvent(!muted);
   useAmbientPurr(playPurr, !muted);
@@ -34,6 +42,12 @@ export default function App() {
     [playError]
   );
 
+  const goToLegal = (v: LegalView) => {
+    setView(v);
+  };
+
+  const legal = getLegalContent(language);
+
   return (
     <div className="flex min-h-screen w-full items-center justify-center px-4 py-8">
       <div
@@ -42,20 +56,42 @@ export default function App() {
       >
         <CatPaw furColor={theme.furColor} active={pawActive} style={{ top: pawTop }} />
 
-        <Header theme={theme} emotion={emotion} muted={muted} onToggleMute={toggleMuted} onCycleTheme={cycleTheme} />
-        <ModeTabs mode={mode} onChange={setMode} />
+        <Header
+          theme={theme}
+          emotion={emotion}
+          muted={muted}
+          onToggleMute={toggleMuted}
+          onCycleTheme={cycleTheme}
+          darkMode={darkMode}
+          onToggleDarkMode={toggleDarkMode}
+        />
 
-        {mode === "basic" && <BasicMode onPress={handlePress} onResult={handleResult} onEmotion={setEmotion} />}
-        {mode === "scientific" && (
-          <ScientificMode onPress={handlePress} onResult={handleResult} onEmotion={setEmotion} />
+        {view === "calculator" ? (
+          <>
+            <ModeTabs mode={mode} onChange={setMode} />
+
+            {mode === "basic" && <BasicMode onPress={handlePress} onResult={handleResult} onEmotion={setEmotion} />}
+            {mode === "scientific" && (
+              <ScientificMode onPress={handlePress} onResult={handleResult} onEmotion={setEmotion} />
+            )}
+            {mode === "financial" && <FinancialStandard />}
+            {mode === "hp" && <Hp12c onPress={handlePress} onError={playError} onEmotion={setEmotion} />}
+          </>
+        ) : (
+          <LegalPage document={legal[view]} onBack={() => setView("calculator")} />
         )}
-        {mode === "financial" && <FinancialStandard />}
-        {mode === "hp" && <FinancialHP />}
 
-        <p className="mt-4 text-center text-[10px] opacity-50" style={{ color: "var(--color-display)" }}>
-          Made with 🐾 by Nekolculator
-        </p>
+        <Footer onNavigate={goToLegal} onOpenCookieSettings={() => setCookieSettingsOpen(true)} />
       </div>
+
+      <CookieConsent
+        forceOpen={cookieSettingsOpen}
+        onResolved={() => setCookieSettingsOpen(false)}
+        onNavigate={(v) => {
+          setCookieSettingsOpen(false);
+          setView(v);
+        }}
+      />
     </div>
   );
 }

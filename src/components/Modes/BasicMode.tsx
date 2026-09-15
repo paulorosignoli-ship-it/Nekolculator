@@ -1,8 +1,9 @@
 import { useEffect } from "react";
 import { Display } from "../Display";
 import { BasicKeypad } from "../Keypad/BasicKeypad";
-import { useCalculator } from "../../hooks/useCalculator";
+import { useCalculator, resolveStatus } from "../../hooks/useCalculator";
 import { useKeyboard } from "../../hooks/useKeyboard";
+import { useTranslation } from "../../lib/i18n";
 import type { MascotEmotion } from "../../types";
 
 interface BasicModeProps {
@@ -13,6 +14,7 @@ interface BasicModeProps {
 
 export function BasicMode({ onPress, onResult, onEmotion }: BasicModeProps) {
   const calc = useCalculator({ onEquals: onResult });
+  const t = useTranslation();
 
   useEffect(() => {
     onEmotion(calc.hasError ? "confused" : calc.justEvaluated ? "happy" : "idle");
@@ -53,8 +55,9 @@ export function BasicMode({ onPress, onResult, onEmotion }: BasicModeProps) {
 
   return (
     <div>
-      <Display expression={calc.prettyDisplay} statusText={calc.statusText} hasError={calc.hasError} />
+      <Display expression={calc.prettyDisplay} statusText={resolveStatus(calc.statusKey, t)} hasError={calc.hasError} />
       <BasicKeypad
+        t={t}
         onDigit={(d) => {
           onPress();
           calc.appendDigit(d);

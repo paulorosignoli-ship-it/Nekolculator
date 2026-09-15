@@ -1,3 +1,5 @@
+import { darken, lighten } from "./color";
+
 export type CatPattern = "tabby" | "void" | "siamese" | "calico" | "fluffy" | "tuxedo" | "kitten";
 
 export interface ThemeColors {
@@ -223,25 +225,50 @@ export function getThemeById(id: string): CatTheme {
   return themes.find((t) => t.id === id) ?? themes[0];
 }
 
-export function applyThemeToRoot(theme: CatTheme) {
+/** Programmatically derives a dark-mode palette from a theme's light palette.
+ * Keeps each theme's hue/personality but swaps light surfaces for dark ones
+ * and flips their paired text colors, so every theme gets a dark mode for free.
+ */
+export function getDarkColors(colors: ThemeColors): ThemeColors {
+  return {
+    bg: darken(colors.bg, 12, 0.7),
+    body: darken(colors.body, 17, 0.6),
+    bodyBorder: darken(colors.bodyBorder, 26, 0.6),
+    display: darken(colors.display, 8, 0.8),
+    displayText: colors.displayText,
+    displaySubText: colors.displaySubText,
+    numBtn: darken(colors.numBtn, 24, 0.5),
+    numBtnText: lighten(colors.numBtnText, 92),
+    opBtn: darken(colors.opBtn, 38),
+    opBtnText: colors.opBtnText,
+    equalsBtn: colors.equalsBtn,
+    equalsBtnText: colors.equalsBtnText,
+    accent: lighten(colors.accent, 62),
+    accentSoft: darken(colors.accentSoft, 28, 0.6),
+  };
+}
+
+export function applyThemeToRoot(theme: CatTheme, darkMode = false) {
   const root = document.documentElement;
+  const colors = darkMode ? getDarkColors(theme.colors) : theme.colors;
   const map: Record<string, string> = {
-    "--color-bg": theme.colors.bg,
-    "--color-body": theme.colors.body,
-    "--color-body-border": theme.colors.bodyBorder,
-    "--color-display": theme.colors.display,
-    "--color-display-text": theme.colors.displayText,
-    "--color-display-subtext": theme.colors.displaySubText,
-    "--color-num-btn": theme.colors.numBtn,
-    "--color-num-btn-text": theme.colors.numBtnText,
-    "--color-op-btn": theme.colors.opBtn,
-    "--color-op-btn-text": theme.colors.opBtnText,
-    "--color-equals-btn": theme.colors.equalsBtn,
-    "--color-equals-btn-text": theme.colors.equalsBtnText,
-    "--color-accent": theme.colors.accent,
-    "--color-accent-soft": theme.colors.accentSoft,
+    "--color-bg": colors.bg,
+    "--color-body": colors.body,
+    "--color-body-border": colors.bodyBorder,
+    "--color-display": colors.display,
+    "--color-display-text": colors.displayText,
+    "--color-display-subtext": colors.displaySubText,
+    "--color-num-btn": colors.numBtn,
+    "--color-num-btn-text": colors.numBtnText,
+    "--color-op-btn": colors.opBtn,
+    "--color-op-btn-text": colors.opBtnText,
+    "--color-equals-btn": colors.equalsBtn,
+    "--color-equals-btn-text": colors.equalsBtnText,
+    "--color-accent": colors.accent,
+    "--color-accent-soft": colors.accentSoft,
   };
   for (const [key, value] of Object.entries(map)) {
     root.style.setProperty(key, value);
   }
+  root.classList.toggle("dark", darkMode);
 }

@@ -1,13 +1,33 @@
 import { useCallback, useMemo, useState } from "react";
 import { CalculatorError, evaluate, formatResult, type AngleMode } from "../lib/calculator";
+import type { Translations } from "../lib/i18n/types";
 
 const MAX_LENGTH = 60;
 
-const STATUS_IDLE = "Ready to pounce...";
-const STATUS_TYPING = "Sharpening claws...";
+export type StatusKey =
+  | "ready"
+  | "typing"
+  | "purring"
+  | "errorDivZero"
+  | "errorDomain"
+  | "errorSyntax"
+  | "errorOverflow"
+  | "errorGeneric";
 
 export interface UseCalculatorOptions {
   onEquals?: (success: boolean) => void;
+}
+
+const ERROR_CODE_TO_STATUS_KEY: Record<string, StatusKey> = {
+  DIV_ZERO: "errorDivZero",
+  DOMAIN: "errorDomain",
+  SYNTAX: "errorSyntax",
+  OVERFLOW: "errorOverflow",
+};
+
+/** Resolves a statusKey to display text for the given language dictionary. */
+export function resolveStatus(key: StatusKey, t: Translations): string {
+  return t.status[key];
 }
 
 /** Toggles the sign of the trailing number in an expression string, respecting operator context. */
@@ -31,7 +51,7 @@ function toggleTrailingSign(input: string): string {
 export function useCalculator(options: UseCalculatorOptions = {}) {
   const [input, setInput] = useState("");
   const [result, setResult] = useState<string>("");
-  const [statusText, setStatusText] = useState(STATUS_IDLE);
+  const [statusKey, setStatusKey] = useState<StatusKey>("ready");
   const [hasError, setHasError] = useState(false);
   const [justEvaluated, setJustEvaluated] = useState(false);
   const [angleMode, setAngleMode] = useState<AngleMode>("DEG");
@@ -55,7 +75,7 @@ export function useCalculator(options: UseCalculatorOptions = {}) {
       });
       setJustEvaluated(false);
       setResult("");
-      setStatusText(STATUS_TYPING);
+      setStatusKey("typing");
       setHasError(false);
     },
     [justEvaluated]
@@ -70,7 +90,7 @@ export function useCalculator(options: UseCalculatorOptions = {}) {
       return (base.length === 0 ? "0" : base) + ".";
     });
     setJustEvaluated(false);
-    setStatusText(STATUS_TYPING);
+    setStatusKey("typing");
     setHasError(false);
   }, [justEvaluated]);
 
@@ -90,7 +110,7 @@ export function useCalculator(options: UseCalculatorOptions = {}) {
       });
       setJustEvaluated(false);
       setResult("");
-      setStatusText(STATUS_TYPING);
+      setStatusKey("typing");
       setHasError(false);
     },
     [justEvaluated, result]
@@ -104,7 +124,7 @@ export function useCalculator(options: UseCalculatorOptions = {}) {
       });
       setJustEvaluated(false);
       setResult("");
-      setStatusText(STATUS_TYPING);
+      setStatusKey("typing");
       setHasError(false);
     },
     [justEvaluated]
@@ -118,7 +138,7 @@ export function useCalculator(options: UseCalculatorOptions = {}) {
       });
       setJustEvaluated(false);
       setResult("");
-      setStatusText(STATUS_TYPING);
+      setStatusKey("typing");
       setHasError(false);
     },
     [justEvaluated]
@@ -136,7 +156,7 @@ export function useCalculator(options: UseCalculatorOptions = {}) {
     });
     setJustEvaluated(false);
     setResult("");
-    setStatusText(STATUS_TYPING);
+    setStatusKey("typing");
     setHasError(false);
   }, [justEvaluated]);
 
@@ -148,7 +168,7 @@ export function useCalculator(options: UseCalculatorOptions = {}) {
         return base + symbol;
       });
       setJustEvaluated(false);
-      setStatusText(STATUS_TYPING);
+      setStatusKey("typing");
       setHasError(false);
     },
     [justEvaluated, result]
@@ -159,12 +179,12 @@ export function useCalculator(options: UseCalculatorOptions = {}) {
       setInput("");
       setResult("");
       setJustEvaluated(false);
-      setStatusText(STATUS_IDLE);
+      setStatusKey("ready");
       return;
     }
     setInput((prev) => prev.slice(0, -1));
     setHasError(false);
-    setStatusText(STATUS_TYPING);
+    setStatusKey("typing");
   }, [justEvaluated]);
 
   const clearAll = useCallback(() => {
@@ -172,7 +192,7 @@ export function useCalculator(options: UseCalculatorOptions = {}) {
     setResult("");
     setHasError(false);
     setJustEvaluated(false);
-    setStatusText(STATUS_IDLE);
+    setStatusKey("ready");
   }, []);
 
   const toggleSign = useCallback(() => {
@@ -181,7 +201,7 @@ export function useCalculator(options: UseCalculatorOptions = {}) {
       return toggleTrailingSign(base);
     });
     setJustEvaluated(false);
-    setStatusText(STATUS_TYPING);
+    setStatusKey("typing");
   }, [justEvaluated, result]);
 
   const toggleAngleMode = useCallback(() => {
@@ -197,12 +217,13 @@ export function useCalculator(options: UseCalculatorOptions = {}) {
       setInput(formatted);
       setJustEvaluated(true);
       setHasError(false);
-      setStatusText("Purring over the answer~");
+      setStatusKey("purring");
       options.onEquals?.(true);
     } catch (e) {
-      const message = e instanceof CalculatorError ? e.message : "Something went sideways.";
+      const key: StatusKey =
+        e instanceof CalculatorError ? ERROR_CODE_TO_STATUS_KEY[e.code] ?? "errorGeneric" : "errorGeneric";
       setHasError(true);
-      setStatusText(message);
+      setStatusKey(key);
       setJustEvaluated(true);
       options.onEquals?.(false);
     }
@@ -214,7 +235,7 @@ export function useCalculator(options: UseCalculatorOptions = {}) {
     displayValue,
     prettyDisplay,
     result,
-    statusText,
+    statusKey,
     hasError,
     angleMode,
     justEvaluated,

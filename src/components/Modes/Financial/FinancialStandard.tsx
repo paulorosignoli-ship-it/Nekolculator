@@ -1,5 +1,6 @@
 import { useMemo, useState } from "react";
 import { calcCompoundGrowth, calcDiscount, calcLoanPayment, calcSalesTax, FinancialError } from "../../../lib/financial";
+import { useTranslation } from "../../../lib/i18n";
 
 type SubMode = "loan" | "growth" | "discount";
 
@@ -64,13 +65,13 @@ function ResultCard({ rows }: { rows: { label: string; value: string; emphasize?
   );
 }
 
-const SUB_TABS: { id: SubMode; label: string }[] = [
-  { id: "loan", label: "Loan / PMT" },
-  { id: "growth", label: "Growth" },
-  { id: "discount", label: "Discount & Tax" },
-];
-
 export function FinancialStandard() {
+  const t = useTranslation();
+  const SUB_TABS: { id: SubMode; label: string }[] = [
+    { id: "loan", label: t.financial.loanTab },
+    { id: "growth", label: t.financial.growthTab },
+    { id: "discount", label: t.financial.discountTab },
+  ];
   const [subMode, setSubMode] = useState<SubMode>("loan");
 
   // Loan state
@@ -134,21 +135,21 @@ export function FinancialStandard() {
       {subMode === "loan" && (
         <div>
           <div className="grid grid-cols-2 gap-3">
-            <Field label="Loan amount" value={principal} onChange={setPrincipal} suffix="$" />
-            <Field label="Annual rate" value={loanRate} onChange={setLoanRate} suffix="%" />
-            <Field label="Term (years)" value={years} onChange={setYears} />
-            <Field label="Payments / yr" value={paymentsPerYear} onChange={setPaymentsPerYear} />
+            <Field label={t.financial.loanAmount} value={principal} onChange={setPrincipal} suffix="$" />
+            <Field label={t.financial.annualRate} value={loanRate} onChange={setLoanRate} suffix="%" />
+            <Field label={t.financial.termYears} value={years} onChange={setYears} />
+            <Field label={t.financial.paymentsPerYear} value={paymentsPerYear} onChange={setPaymentsPerYear} />
           </div>
           {loanResult && !(loanResult instanceof FinancialError) ? (
             <ResultCard
               rows={[
-                { label: "Payment per period", value: money(loanResult.payment), emphasize: true },
-                { label: "Total paid", value: money(loanResult.totalPaid) },
-                { label: "Total interest", value: money(loanResult.totalInterest) },
+                { label: t.financial.paymentPerPeriod, value: money(loanResult.payment), emphasize: true },
+                { label: t.financial.totalPaid, value: money(loanResult.totalPaid) },
+                { label: t.financial.totalInterest, value: money(loanResult.totalInterest) },
               ]}
             />
           ) : (
-            <ResultCard rows={[{ label: "Status", value: "Fill in all fields to purr-form the math" }]} />
+            <ResultCard rows={[{ label: "", value: t.financial.fillFields }]} />
           )}
         </div>
       )}
@@ -156,22 +157,22 @@ export function FinancialStandard() {
       {subMode === "growth" && (
         <div>
           <div className="grid grid-cols-2 gap-3">
-            <Field label="Starting amount" value={growthPrincipal} onChange={setGrowthPrincipal} suffix="$" />
-            <Field label="Annual rate" value={growthRate} onChange={setGrowthRate} suffix="%" />
-            <Field label="Years" value={growthYears} onChange={setGrowthYears} />
-            <Field label="Compounds / yr" value={compoundsPerYear} onChange={setCompoundsPerYear} />
-            <Field label="Monthly add-on" value={contribution} onChange={setContribution} suffix="$" />
+            <Field label={t.financial.startingAmount} value={growthPrincipal} onChange={setGrowthPrincipal} suffix="$" />
+            <Field label={t.financial.annualRate} value={growthRate} onChange={setGrowthRate} suffix="%" />
+            <Field label={t.financial.years} value={growthYears} onChange={setGrowthYears} />
+            <Field label={t.financial.compoundsPerYear} value={compoundsPerYear} onChange={setCompoundsPerYear} />
+            <Field label={t.financial.monthlyAddOn} value={contribution} onChange={setContribution} suffix="$" />
           </div>
           {growthResult ? (
             <ResultCard
               rows={[
-                { label: "Future value", value: money(growthResult.futureValue), emphasize: true },
-                { label: "Total contributed", value: money(growthResult.totalContributions) },
-                { label: "Interest earned", value: money(growthResult.totalInterest) },
+                { label: t.financial.futureValue, value: money(growthResult.futureValue), emphasize: true },
+                { label: t.financial.totalContributed, value: money(growthResult.totalContributions) },
+                { label: t.financial.interestEarned, value: money(growthResult.totalInterest) },
               ]}
             />
           ) : (
-            <ResultCard rows={[{ label: "Status", value: "Fill in all fields to purr-form the math" }]} />
+            <ResultCard rows={[{ label: "", value: t.financial.fillFields }]} />
           )}
         </div>
       )}
@@ -179,16 +180,16 @@ export function FinancialStandard() {
       {subMode === "discount" && (
         <div>
           <div className="grid grid-cols-2 gap-3">
-            <Field label="Price" value={price} onChange={setPrice} suffix="$" />
-            <Field label="Discount" value={discountPct} onChange={setDiscountPct} suffix="%" />
-            <Field label="Sales tax" value={taxPct} onChange={setTaxPct} suffix="%" />
+            <Field label={t.financial.price} value={price} onChange={setPrice} suffix="$" />
+            <Field label={t.financial.discount} value={discountPct} onChange={setDiscountPct} suffix="%" />
+            <Field label={t.financial.salesTax} value={taxPct} onChange={setTaxPct} suffix="%" />
           </div>
           {discountResult && (
             <ResultCard
               rows={[
-                { label: "Final total", value: money(discountResult.total), emphasize: true },
-                { label: "You save", value: money(discountResult.savings) },
-                { label: "Tax charged", value: money(discountResult.tax) },
+                { label: t.financial.finalTotal, value: money(discountResult.total), emphasize: true },
+                { label: t.financial.youSave, value: money(discountResult.savings) },
+                { label: t.financial.taxCharged, value: money(discountResult.tax) },
               ]}
             />
           )}

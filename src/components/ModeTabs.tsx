@@ -1,11 +1,5 @@
-import type { CalculatorMode, ModeTabDef } from "../types";
-
-const TABS: ModeTabDef[] = [
-  { id: "basic", label: "Basic", shortLabel: "Basic" },
-  { id: "scientific", label: "Scientific", shortLabel: "Sci" },
-  { id: "financial", label: "Financial", shortLabel: "Fin" },
-  { id: "hp", label: "HP-Style TVM", shortLabel: "TVM" },
-];
+import type { CalculatorMode } from "../types";
+import { useTranslation } from "../lib/i18n";
 
 interface ModeTabsProps {
   mode: CalculatorMode;
@@ -13,6 +7,15 @@ interface ModeTabsProps {
 }
 
 export function ModeTabs({ mode, onChange }: ModeTabsProps) {
+  const t = useTranslation();
+
+  const TABS: { id: CalculatorMode; label: string; shortLabel: string }[] = [
+    { id: "basic", label: t.tabs.basic, shortLabel: t.tabs.basicShort },
+    { id: "scientific", label: t.tabs.scientific, shortLabel: t.tabs.scientificShort },
+    { id: "financial", label: t.tabs.financial, shortLabel: t.tabs.financialShort },
+    { id: "hp", label: t.tabs.hp, shortLabel: t.tabs.hpShort },
+  ];
+
   return (
     <div
       className="scrollbar-none mb-4 flex gap-1 overflow-x-auto rounded-full p-1"

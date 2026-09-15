@@ -104,7 +104,7 @@ class CatSoundEngine {
     if (!url) return;
     const jitter = 0.94 + Math.random() * 0.12; // subtle natural variance between presses
     this.getBuffer(url).then((buf) => {
-      if (buf) this.playBuffer(buf, { rate: pitchMultiplier * jitter, gain: 0.85 });
+      if (buf) this.playBuffer(buf, { rate: pitchMultiplier * jitter, gain: 0.51 });
     });
   }
 
@@ -114,7 +114,7 @@ class CatSoundEngine {
     const url = pickRandom(ERROR_SOUNDS);
     if (!url) return;
     this.getBuffer(url).then((buf) => {
-      if (buf) this.playBuffer(buf, { rate: Math.min(1.1, Math.max(0.9, pitchMultiplier)), gain: 0.9 });
+      if (buf) this.playBuffer(buf, { rate: Math.min(1.1, Math.max(0.9, pitchMultiplier)), gain: 0.54 });
     });
   }
 
@@ -125,7 +125,7 @@ class CatSoundEngine {
     if (!url) return;
     const rate = Math.min(1.15, Math.max(0.85, pitchMultiplier));
     this.getBuffer(url).then((buf) => {
-      if (buf) this.playBuffer(buf, { rate, gain: 0.5, fadeOutTail: 0.6 });
+      if (buf) this.playBuffer(buf, { rate, gain: 0.3, fadeOutTail: 0.6 });
     });
   }
 }

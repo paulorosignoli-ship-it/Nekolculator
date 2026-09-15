@@ -1,7 +1,9 @@
 import type { AngleMode } from "../../lib/calculator";
 import { CalcButton } from "./Button";
+import type { Translations } from "../../lib/i18n/types";
 
 interface ScientificKeypadProps {
+  t: Translations;
   onParen: (p: "(" | ")") => void;
   onOperator: (op: string) => void;
   onFunction: (fn: string) => void;
@@ -12,6 +14,7 @@ interface ScientificKeypadProps {
 }
 
 export function ScientificKeypad({
+  t,
   onParen,
   onOperator,
   onFunction,
@@ -22,12 +25,12 @@ export function ScientificKeypad({
 }: ScientificKeypadProps) {
   return (
     <div className="mb-2.5 grid grid-cols-4 gap-2">
-      <CalcButton small variant="muted" label="(" onClick={() => onParen("(")} ariaLabel="Open parenthesis" />
-      <CalcButton small variant="muted" label=")" onClick={() => onParen(")")} ariaLabel="Close parenthesis" />
-      <CalcButton small variant="muted" label="xʸ" onClick={() => onOperator("^")} ariaLabel="Power" />
-      <CalcButton small variant="muted" label="x²" onClick={() => onOperator("^2")} ariaLabel="Square" />
+      <CalcButton small variant="muted" label="(" onClick={() => onParen("(")} ariaLabel={t.scientific.openParen} />
+      <CalcButton small variant="muted" label=")" onClick={() => onParen(")")} ariaLabel={t.scientific.closeParen} />
+      <CalcButton small variant="muted" label="xʸ" onClick={() => onOperator("^")} ariaLabel={t.scientific.power} />
+      <CalcButton small variant="muted" label="x²" onClick={() => onOperator("^2")} ariaLabel={t.scientific.square} />
 
-      <CalcButton small variant="muted" label="√x" onClick={() => onFunction("sqrt")} ariaLabel="Square root" />
+      <CalcButton small variant="muted" label="√x" onClick={() => onFunction("sqrt")} ariaLabel={t.scientific.squareRoot} />
       <CalcButton small variant="muted" label="sin" onClick={() => onFunction("sin")} />
       <CalcButton small variant="muted" label="cos" onClick={() => onFunction("cos")} />
       <CalcButton small variant="muted" label="tan" onClick={() => onFunction("tan")} />
@@ -37,14 +40,14 @@ export function ScientificKeypad({
       <CalcButton small variant="muted" label="π" onClick={() => onConstant("\u03c0")} ariaLabel="Pi" />
       <CalcButton small variant="muted" label="e" onClick={() => onConstant("e")} ariaLabel="Euler's number" />
 
-      <CalcButton small variant="muted" label="n!" onClick={() => onPostfix("!")} ariaLabel="Factorial" />
+      <CalcButton small variant="muted" label="n!" onClick={() => onPostfix("!")} ariaLabel={t.scientific.factorial} />
       <CalcButton
         small
         variant="muted"
         span={2}
         label={angleMode}
         onClick={onToggleAngleMode}
-        ariaLabel="Toggle degrees/radians"
+        ariaLabel={t.scientific.toggleAngle}
       />
     </div>
   );

@@ -2,8 +2,9 @@ import { useEffect } from "react";
 import { Display } from "../Display";
 import { BasicKeypad } from "../Keypad/BasicKeypad";
 import { ScientificKeypad } from "../Keypad/ScientificKeypad";
-import { useCalculator } from "../../hooks/useCalculator";
+import { useCalculator, resolveStatus } from "../../hooks/useCalculator";
 import { useKeyboard } from "../../hooks/useKeyboard";
+import { useTranslation } from "../../lib/i18n";
 import type { MascotEmotion } from "../../types";
 
 interface ScientificModeProps {
@@ -14,6 +15,7 @@ interface ScientificModeProps {
 
 export function ScientificMode({ onPress, onResult, onEmotion }: ScientificModeProps) {
   const calc = useCalculator({ onEquals: onResult });
+  const t = useTranslation();
 
   useEffect(() => {
     onEmotion(calc.hasError ? "confused" : calc.justEvaluated ? "happy" : "idle");
@@ -59,11 +61,12 @@ export function ScientificMode({ onPress, onResult, onEmotion }: ScientificModeP
     <div>
       <Display
         expression={calc.prettyDisplay}
-        statusText={calc.statusText}
+        statusText={resolveStatus(calc.statusKey, t)}
         hasError={calc.hasError}
         angleMode={calc.angleMode}
       />
       <ScientificKeypad
+        t={t}
         onParen={(p) => {
           onPress();
           calc.appendParen(p);
@@ -91,6 +94,7 @@ export function ScientificMode({ onPress, onResult, onEmotion }: ScientificModeP
         }}
       />
       <BasicKeypad
+        t={t}
         onDigit={(d) => {
           onPress();
           calc.appendDigit(d);
