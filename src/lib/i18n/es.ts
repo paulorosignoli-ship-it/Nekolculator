@@ -100,6 +100,10 @@ export const es: Translations = {
     settingsLink: "Preferencias de cookies",
     bannerPolicyLinkText: "Política de Cookies",
   },
+  meta: {
+    homeTitle: "Nekolculator — Calculadora con Temática de Gatos",
+    homeDescription: "Una calculadora gratuita e instalable con temática de gatos, con modos básico, científico, financiero y HP-12C (RPN). Siete temas, modo oscuro, sonidos reales de gatos, cuatro idiomas.",
+  },
   footer: {
     privacy: "Política de Privacidad",
     terms: "Términos de Uso",

@@ -68,6 +68,51 @@ function PatternOverlay({ theme }: { theme: CatTheme }) {
           <ellipse cx="50" cy="70" rx="9" ry="5" fill={theme.furAccent} opacity="0.8" />
         </g>
       );
+    case "jaguar":
+      return (
+        <g fill="none" stroke={theme.furAccent} strokeWidth="2.6" opacity="0.85">
+          <circle cx="30" cy="42" r="4.5" />
+          <circle cx="42" cy="34" r="4" />
+          <circle cx="58" cy="34" r="4" />
+          <circle cx="70" cy="42" r="4.5" />
+          <circle cx="33" cy="56" r="3.6" />
+          <circle cx="67" cy="56" r="3.6" />
+          <circle cx="50" cy="60" r="4" />
+        </g>
+      );
+    case "solid":
+      return null;
+    case "rosette":
+      return (
+        <g fill={theme.furAccent} opacity="0.8">
+          <ellipse cx="29" cy="40" rx="2.6" ry="2" />
+          <ellipse cx="38" cy="32" rx="2.4" ry="1.8" />
+          <ellipse cx="50" cy="28" rx="2.4" ry="1.8" />
+          <ellipse cx="62" cy="32" rx="2.4" ry="1.8" />
+          <ellipse cx="71" cy="40" rx="2.6" ry="2" />
+          <ellipse cx="32" cy="54" rx="2.2" ry="1.7" />
+          <ellipse cx="68" cy="54" rx="2.2" ry="1.7" />
+          <ellipse cx="44" cy="60" rx="2" ry="1.6" />
+          <ellipse cx="56" cy="60" rx="2" ry="1.6" />
+        </g>
+      );
+    case "tortoiseshell":
+      return (
+        <g opacity="0.88">
+          <path d="M18 28 Q28 16 40 22 Q34 32 32 42 Q20 40 18 28 Z" fill={theme.furAccent} />
+          <path d="M60 18 Q74 16 80 28 Q72 34 68 42 Q58 34 60 18 Z" fill={theme.furAccent} />
+          <ellipse cx="46" cy="60" rx="9" ry="6" fill={theme.furAccent} opacity="0.75" />
+          <ellipse cx="66" cy="52" rx="6" ry="5" fill={theme.furAccent} opacity="0.6" />
+        </g>
+      );
+    case "hairless":
+      return (
+        <g fill="none" stroke={theme.furAccent} strokeWidth="1.3" opacity="0.55" strokeLinecap="round">
+          <path d="M32 30 Q50 24 68 30" />
+          <path d="M28 40 Q50 35 72 40" />
+          <path d="M34 68 Q50 74 66 68" />
+        </g>
+      );
     default:
       return null;
   }

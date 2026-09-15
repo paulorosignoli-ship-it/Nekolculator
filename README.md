@@ -13,9 +13,12 @@ Built with **React + TypeScript + Vite + Tailwind CSS**. No extra runtime depend
 - **Safe math engine** — a hand-rolled tokenizer + shunting-yard parser + RPN evaluator in `src/lib/calculator.ts`. No `eval()`, anywhere.
 - **Real cat sound FX** — your recorded meows/errors/purr, played via the Web Audio API for low-latency overlapping playback (`src/lib/soundEffects.ts`), each theme applying a subtle pitch shift. Volumes are tuned down ~40% from the initial pass.
 - **Cat paw easter egg** — a paw occasionally swipes in from the edge of the card.
-- **Dynamic theme engine** — 7 feline themes, randomized on load, cycled via the paw button.
+- **Dynamic theme engine** — 13 feline themes (Orange Tabby, Black Void, Siamese Point, Calico, Fluffy White, Tuxedo, Kitten, Jaguar, Brown Tabby, Russian Gray, Tortoiseshell, Bengal, Sphynx), randomized on load, cycled via the paw button in the side rail.
 - **Dark mode** — a programmatic dark-mode pass (`src/lib/color.ts`) derives a dark palette from *any* theme (light or future ones) rather than hand-tuning 7 separate dark palettes. Toggle in the header; respects OS preference on first visit, persists after that.
-- **4 languages** — English, Brazilian Portuguese, Spanish, and Japanese. Flag button in the header cycles through them; auto-detects from the browser on first visit. See `src/lib/i18n/`.
+- **4 languages** — English, Brazilian Portuguese, Spanish, and Japanese. Flag button in the side rail cycles through them; auto-detects from the browser on first visit. See `src/lib/i18n/`.
+- **Side control rail** — theme, dark/light, and volume buttons stacked vertically on the right edge of the card, with the language button below them (`src/components/SideControls.tsx`), matching the layout you sketched.
+- **Real URLs for legal pages** — `/privacy`, `/terms`, `/cookies` are genuine, shareable, bookmarkable, crawlable routes (via a small hand-rolled History API router, `src/hooks/useRouter.ts`) rather than in-app-only state, which matters for SEO and for direct linking.
+- **SEO basics** — `robots.txt`, `sitemap.xml`, canonical URL, Open Graph + Twitter Card tags, a static 1200×630 share image (`public/og-image.png`), and JSON-LD `WebApplication` structured data. See "SEO — please review before publishing" below.
 - **Legal pages** — Privacy Policy, Terms of Use, and Cookie Policy, written and translated into all 4 languages, linked from the footer. See "Legal content — please review" below.
 - **Cookie consent banner** — bottom sheet on first visit with "Accept all" / "Necessary only", reopenable anytime via the footer's "Cookie settings" link. Stores its choice in `localStorage`.
 - **Full keyboard support** — digits, numpad, `+ - * /`, `Enter`/`=`, `Escape` (clear), `Backspace`, parentheses (Basic/Scientific); a separate RPN-flavored keyboard mapping for HP-12C mode (`Enter` = ENTER, not `=`).
@@ -100,6 +103,22 @@ I wrote full Privacy Policy, Terms of Use, and Cookie Policy content in all 4 la
 2. **Jurisdiction / company details** — the Terms of Use are intentionally jurisdiction-neutral (no specific governing-law clause), since I don't know where you're incorporated or operating from. If you want a specific governing-law/venue clause, that's a one-paragraph addition once you confirm the jurisdiction — happy to add it.
 
 Non-English legal pages include a small note that the English version governs in case of any translation discrepancy, which is standard practice for machine-assisted legal translation.
+
+## SEO — please review before publishing
+
+I added the standard SEO groundwork, using a **placeholder domain** (`nekolculator.app`) since you haven't registered yours yet:
+
+- `public/robots.txt` — allows all crawlers, points to the sitemap.
+- `public/sitemap.xml` — lists `/`, `/privacy`, `/terms`, `/cookies`.
+- `index.html` — descriptive `<title>`, meta description, canonical URL, Open Graph + Twitter Card tags, and JSON-LD `WebApplication` structured data.
+- `public/og-image.png` — a static 1200×630 share image (so link previews on social/chat apps look right even without JS execution).
+- `document.title` updates per page/language at runtime via `src/App.tsx`.
+
+**Once you register your domain today, do a find-and-replace of `nekolculator.app` for your real domain** across: `public/robots.txt`, `public/sitemap.xml`, `index.html` (canonical + all `og:`/`twitter:` URLs), and `src/content/legal/*.ts` (the `CONTACT_EMAIL` constant, if your email will be on that domain).
+
+Two honest limitations worth knowing about, given this is a client-rendered SPA:
+- **hreflang** isn't set up, because language is a client-side preference (stored in `localStorage`), not part of the URL — there's no `/es/`, `/ja/` etc. to point `hreflang` at. If you want language-specific SEO later, that's a bigger change (URL-based locale routing) — happy to do it, just flagging it's a separate piece of work from what's here now.
+- Meta tags in `index.html` are static per the *whole site*, not per-route — a crawler that doesn't execute JavaScript will see the homepage's title/description even when linked to `/privacy`. Google's own crawler executes JS and will see the correct per-page title (set client-side), but not every bot does. If that matters to you (e.g. for rich previews when someone shares the Privacy Policy link specifically), the fix is pre-rendering those routes at build time — again, a separate task from this pass.
 
 ## Notes on the math
 

@@ -100,6 +100,10 @@ export const en: Translations = {
     settingsLink: "Cookie settings",
     bannerPolicyLinkText: "Cookie Policy",
   },
+  meta: {
+    homeTitle: "Nekolculator — Cute Cat-Themed Calculator",
+    homeDescription: "A free, installable cat-themed calculator with basic, scientific, financial, and HP-12C RPN modes. Seven themes, dark mode, real cat sounds, four languages.",
+  },
   footer: {
     privacy: "Privacy Policy",
     terms: "Terms of Use",

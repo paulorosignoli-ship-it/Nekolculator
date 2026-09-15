@@ -100,6 +100,10 @@ export const ja: Translations = {
     settingsLink: "Cookie設定",
     bannerPolicyLinkText: "Cookieポリシー",
   },
+  meta: {
+    homeTitle: "Nekolculator — かわいい猫テーマの電卓",
+    homeDescription: "基本・関数・金融・HP-12C（RPN）モードを備えた、無料でインストールできる猫テーマの電卓アプリ。7種類のテーマ、ダークモード、本物の猫の鳴き声、4か国語対応。",
+  },
   footer: {
     privacy: "プライバシーポリシー",
     terms: "利用規約",

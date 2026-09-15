@@ -6,14 +6,73 @@
     <link rel="apple-touch-icon" href="/icons/icon-192.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1" />
     <meta name="theme-color" content="#F8D8B8" />
-    <meta name="description" content="Nekolculator — a cute cat-themed calculator with basic, scientific, and financial modes." />
+
+    <!-- Primary SEO -->
+    <title>Nekolculator — Cute Cat-Themed Calculator</title>
+    <meta
+      name="description"
+      content="A free, installable cat-themed calculator with basic, scientific, financial, and HP-12C RPN modes. Seven feline themes, dark mode, real cat sounds, and four languages."
+    />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href="https://nekolculator.app/" />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Nekolculator" />
+    <meta property="og:title" content="Nekolculator — Cute Cat-Themed Calculator" />
+    <meta
+      property="og:description"
+      content="A free, installable cat-themed calculator with basic, scientific, financial, and HP-12C RPN modes. Seven feline themes, dark mode, real cat sounds, and four languages."
+    />
+    <meta property="og:url" content="https://nekolculator.app/" />
+    <meta property="og:image" content="https://nekolculator.app/og-image.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Nekolculator — a cute cat-themed calculator" />
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Nekolculator — Cute Cat-Themed Calculator" />
+    <meta
+      name="twitter:description"
+      content="A free, installable cat-themed calculator with basic, scientific, financial, and HP-12C RPN modes."
+    />
+    <meta name="twitter:image" content="https://nekolculator.app/og-image.png" />
+
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
       href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500;600;700&family=Nunito:wght@400;600;700;800&display=swap"
       rel="stylesheet"
     />
-    <title>Nekolculator 🐾</title>
+
+    <!-- Structured data -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "Nekolculator",
+        "url": "https://nekolculator.app/",
+        "description": "A free, installable cat-themed calculator with basic, scientific, financial, and HP-12C RPN modes. Seven feline themes, dark mode, real cat sounds, and four languages.",
+        "applicationCategory": "UtilitiesApplication",
+        "operatingSystem": "Any (Progressive Web App)",
+        "offers": {
+          "@type": "Offer",
+          "price": "0",
+          "priceCurrency": "USD"
+        },
+        "inLanguage": ["en", "pt-BR", "es", "ja"],
+        "featureList": [
+          "Basic calculator",
+          "Scientific calculator",
+          "Financial calculator (loan, growth, discount/tax)",
+          "HP-12C style RPN financial calculator",
+          "Seven cat themes",
+          "Dark mode",
+          "Installable offline PWA"
+        ]
+      }
+    </script>
   </head>
   <body>
     <div id="root"></div>

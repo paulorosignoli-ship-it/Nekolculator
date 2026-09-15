@@ -97,6 +97,10 @@ export interface Translations {
     settingsLink: string;
     bannerPolicyLinkText: string;
   };
+  meta: {
+    homeTitle: string;
+    homeDescription: string;
+  };
   footer: {
     privacy: string;
     terms: string;

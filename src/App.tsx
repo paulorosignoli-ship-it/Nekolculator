@@ -1,5 +1,6 @@
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Header } from "./components/Header";
+import { SideControls } from "./components/SideControls";
 import { ModeTabs } from "./components/ModeTabs";
 import { Footer } from "./components/Footer";
 import { LegalPage } from "./components/LegalPage";
@@ -12,17 +13,19 @@ import { CatPaw, usePawEvent } from "./components/CatPaw";
 import { useTheme } from "./hooks/useTheme";
 import { useSound } from "./hooks/useSound";
 import { useAmbientPurr } from "./hooks/useAmbientPurr";
-import { useLanguage } from "./lib/i18n";
+import { useRouter } from "./hooks/useRouter";
+import { useLanguage, useTranslation } from "./lib/i18n";
 import { getLegalContent } from "./content/legal";
-import type { AppView, CalculatorMode, LegalView, MascotEmotion } from "./types";
+import type { CalculatorMode, MascotEmotion } from "./types";
 
 export default function App() {
   const { theme, cycleTheme, darkMode, toggleDarkMode } = useTheme();
   const { muted, toggleMuted, playClick, playError, playPurr } = useSound(theme.soundPitch);
   const { language } = useLanguage();
+  const t = useTranslation();
   const [mode, setMode] = useState<CalculatorMode>("basic");
   const [emotion, setEmotion] = useState<MascotEmotion>("idle");
-  const [view, setView] = useState<AppView>("calculator");
+  const { view, navigate, navigateLegal } = useRouter();
   const [cookieSettingsOpen, setCookieSettingsOpen] = useState(false);
 
   const { pawActive, pawTop } = usePawEvent(!muted);
@@ -42,11 +45,11 @@ export default function App() {
     [playError]
   );
 
-  const goToLegal = (v: LegalView) => {
-    setView(v);
-  };
-
   const legal = getLegalContent(language);
+
+  useEffect(() => {
+    document.title = view === "calculator" ? t.meta.homeTitle : legal[view].title + " — Nekolculator";
+  }, [view, t, legal]);
 
   return (
     <div className="flex min-h-screen w-full items-center justify-center px-4 py-8">
@@ -56,15 +59,15 @@ export default function App() {
       >
         <CatPaw furColor={theme.furColor} active={pawActive} style={{ top: pawTop }} />
 
-        <Header
-          theme={theme}
-          emotion={emotion}
+        <SideControls
           muted={muted}
           onToggleMute={toggleMuted}
           onCycleTheme={cycleTheme}
           darkMode={darkMode}
           onToggleDarkMode={toggleDarkMode}
         />
+
+        <Header theme={theme} emotion={emotion} />
 
         {view === "calculator" ? (
           <>
@@ -78,10 +81,10 @@ export default function App() {
             {mode === "hp" && <Hp12c onPress={handlePress} onError={playError} onEmotion={setEmotion} />}
           </>
         ) : (
-          <LegalPage document={legal[view]} onBack={() => setView("calculator")} />
+          <LegalPage document={legal[view]} onBack={() => navigate("calculator")} />
         )}
 
-        <Footer onNavigate={goToLegal} onOpenCookieSettings={() => setCookieSettingsOpen(true)} />
+        <Footer onNavigate={navigateLegal} onOpenCookieSettings={() => setCookieSettingsOpen(true)} />
       </div>
 
       <CookieConsent
@@ -89,7 +92,7 @@ export default function App() {
         onResolved={() => setCookieSettingsOpen(false)}
         onNavigate={(v) => {
           setCookieSettingsOpen(false);
-          setView(v);
+          navigateLegal(v);
         }}
       />
     </div>

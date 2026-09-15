@@ -8,7 +8,7 @@ export default defineConfig({
     react(),
     VitePWA({
       registerType: "autoUpdate",
-      includeAssets: ["favicon.svg", "icons/*.png", "sounds/**/*.mp3"],
+      includeAssets: ["favicon.svg", "icons/*.png", "sounds/**/*.mp3", "og-image.png", "robots.txt"],
       manifest: {
         name: "Nekolculator",
         short_name: "Nekolculator",
