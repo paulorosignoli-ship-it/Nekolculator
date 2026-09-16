@@ -1,6 +1,6 @@
 import type { LegalContent } from "./types";
 
-const CONTACT_EMAIL = "hello@nekolculator.app";
+const CONTACT_EMAIL = "hello@nekolculator.com.br";
 
 export const legalJa: LegalContent = {
   privacy: {

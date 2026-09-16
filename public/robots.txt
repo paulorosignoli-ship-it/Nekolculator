@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://nekolculator.app/sitemap.xml
+Sitemap: https://nekolculator.com.br/sitemap.xml

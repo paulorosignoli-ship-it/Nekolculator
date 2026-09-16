@@ -1,6 +1,6 @@
 # 🐾 Nekolculator
 
-A cute, cat-themed calculator PWA — Basic, Scientific, Financial (standard forms), and a real HP-12C-style RPN financial calculator, seven feline color themes, dark mode, four languages, real cat sound effects, and legal pages with a cookie consent banner. Installable, offline-ready app shell.
+A cute, cat-themed calculator PWA — Basic, Scientific, Financial (standard forms), and a real HP-12C-style RPN financial calculator, thirteen feline color themes, dark mode, four languages, real cat sound effects, and legal pages with a cookie consent banner. Installable, offline-ready app shell.
 
 Built with **React + TypeScript + Vite + Tailwind CSS**. No extra runtime dependencies beyond React — the i18n system, dark mode, and legal pages are all hand-rolled (no react-router, no i18next).
 
@@ -99,22 +99,23 @@ Push this repo to GitHub, then in Vercel: **New Project → Import** your repo. 
 
 I wrote full Privacy Policy, Terms of Use, and Cookie Policy content in all 4 languages (`src/content/legal/`), covering local-storage-only data collection, the planned AdSense/Monetag advertising, no professional-advice disclaimers for the financial modes, and a specific list of every storage key the app uses. Two things you should update before this goes live:
 
-1. **Contact email** — every page currently uses the placeholder `hello@nekolculator.app`. Set `CONTACT_EMAIL` at the top of each of the 4 files in `src/content/legal/`.
+1. **Contact email** — every page currently uses the placeholder `hello@nekolculator.com.br`. Set `CONTACT_EMAIL` at the top of each of the 4 files in `src/content/legal/`.
 2. **Jurisdiction / company details** — the Terms of Use are intentionally jurisdiction-neutral (no specific governing-law clause), since I don't know where you're incorporated or operating from. If you want a specific governing-law/venue clause, that's a one-paragraph addition once you confirm the jurisdiction — happy to add it.
 
 Non-English legal pages include a small note that the English version governs in case of any translation discrepancy, which is standard practice for machine-assisted legal translation.
 
-## SEO — please review before publishing
+## SEO
 
-I added the standard SEO groundwork, using a **placeholder domain** (`nekolculator.app`) since you haven't registered yours yet:
+The site is set up for `nekolculator.com.br` (your registered domain):
 
 - `public/robots.txt` — allows all crawlers, points to the sitemap.
 - `public/sitemap.xml` — lists `/`, `/privacy`, `/terms`, `/cookies`.
-- `index.html` — descriptive `<title>`, meta description, canonical URL, Open Graph + Twitter Card tags, and JSON-LD `WebApplication` structured data.
+- `index.html` — descriptive `<title>`, meta description, canonical URL, Open Graph + Twitter Card tags, and JSON-LD `WebApplication` structured data — all pointing at `nekolculator.com.br`.
 - `public/og-image.png` — a static 1200×630 share image (so link previews on social/chat apps look right even without JS execution).
 - `document.title` updates per page/language at runtime via `src/App.tsx`.
+- `src/content/legal/*.ts` — `CONTACT_EMAIL` updated to `hello@nekolculator.com.br`. Double check that inbox actually exists/forwards before this goes live, or swap in whatever address you actually want to use.
 
-**Once you register your domain today, do a find-and-replace of `nekolculator.app` for your real domain** across: `public/robots.txt`, `public/sitemap.xml`, `index.html` (canonical + all `og:`/`twitter:` URLs), and `src/content/legal/*.ts` (the `CONTACT_EMAIL` constant, if your email will be on that domain).
+Once the site is live on the real domain, submit `https://nekolculator.com.br/sitemap.xml` in Google Search Console (and Bing Webmaster Tools, if you care about Bing) — that's what actually gets Google crawling it quickly rather than waiting to discover it organically.
 
 Two honest limitations worth knowing about, given this is a client-rendered SPA:
 - **hreflang** isn't set up, because language is a client-side preference (stored in `localStorage`), not part of the URL — there's no `/es/`, `/ja/` etc. to point `hreflang` at. If you want language-specific SEO later, that's a bigger change (URL-based locale routing) — happy to do it, just flagging it's a separate piece of work from what's here now.
@@ -126,6 +127,15 @@ Two honest limitations worth knowing about, given this is a client-rendered SPA:
 - Trig functions respect the DEG/RAD toggle in Scientific mode (default: degrees). HP-12C mode doesn't include trig (the real HP-12C doesn't either).
 - The financial TVM solver (`src/lib/financial.ts`) is shared between Financial (Standard) and HP-12C mode, and treats **N as total periods** (not years), following the standard cash-flow sign convention: money paid out is negative, money received is positive.
 
-## Roadmap: monetization
+## Monetization
 
-Still no ad code shipped. The Cookie Policy and consent banner are already written with AdSense/Monetag in mind (advertising cookies are called out explicitly and gated behind the "Accept all" choice), so wiring in real ad slots later should be additive rather than requiring a rework of the legal/consent plumbing.
+`index.html` now includes the Monetag site-verification tag:
+
+```html
+<meta name="monetag" content="d4063b71bb6b3166056dc54d723dd479" />
+```
+
+That's a verification/ownership tag, not an ad script — it lets Monetag confirm you control the domain, which is usually a prerequisite before they'll approve the site and hand you actual ad placement code. Once Monetag approves the site and gives you a script tag (and/or ad-unit snippets to place in specific spots), send those over and I'll wire them in — likely as a small `<AdSlot />` component with reserved layout space so ads don't cause content to jump around, gated by the existing cookie-consent choice (declining "necessary only" should mean no ad script loads). The Cookie Policy already discloses this is coming, so no legal-copy changes should be needed when the ads actually go live — just a quick pass to swap "coming soon" language to present tense.
+
+AdSense isn't wired in yet — same pattern applies whenever you're ready for that: send the publisher ID/verification snippet and I'll add it alongside Monetag.
+
