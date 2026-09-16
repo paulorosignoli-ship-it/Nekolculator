@@ -15,12 +15,15 @@ const buttonStyle: CSSProperties = {
   border: "1.5px solid var(--color-body-border)",
 };
 
+/** Horizontal row of controls — theme, dark/light, volume, language — meant to
+ * sit in the upper-right corner alongside the mascot/title, in normal flex
+ * flow so it never overlaps the tabs or display below it. */
 export function SideControls({ muted, onToggleMute, onCycleTheme, darkMode, onToggleDarkMode }: SideControlsProps) {
   const t = useTranslation();
   const { currentOption, cycleLanguage } = useLanguage();
 
   return (
-    <div className="absolute right-3 top-3 z-20 flex flex-col items-center gap-2">
+    <div className="flex flex-wrap items-center justify-end gap-1.5">
       <button
         type="button"
         onClick={onCycleTheme}
@@ -51,13 +54,12 @@ export function SideControls({ muted, onToggleMute, onCycleTheme, darkMode, onTo
       >
         {muted ? <MuteIcon color="var(--color-accent)" /> : <SoundIcon color="var(--color-accent)" />}
       </button>
-
       <button
         type="button"
         onClick={cycleLanguage}
         aria-label={t.header.languageButton}
         title={t.header.languageButton}
-        className="btn-press mt-1.5 flex h-9 w-9 items-center justify-center rounded-full text-base shadow-soft"
+        className="btn-press flex h-9 w-9 items-center justify-center rounded-full text-base shadow-soft"
         style={buttonStyle}
       >
         <span aria-hidden="true">{currentOption.flag}</span>

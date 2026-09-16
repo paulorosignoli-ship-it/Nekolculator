@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
 import { Header } from "./components/Header";
-import { SideControls } from "./components/SideControls";
 import { ModeTabs } from "./components/ModeTabs";
 import { Footer } from "./components/Footer";
 import { LegalPage } from "./components/LegalPage";
@@ -59,15 +58,15 @@ export default function App() {
       >
         <CatPaw furColor={theme.furColor} active={pawActive} style={{ top: pawTop }} />
 
-        <SideControls
+        <Header
+          theme={theme}
+          emotion={emotion}
           muted={muted}
           onToggleMute={toggleMuted}
           onCycleTheme={cycleTheme}
           darkMode={darkMode}
           onToggleDarkMode={toggleDarkMode}
         />
-
-        <Header theme={theme} emotion={emotion} />
 
         {view === "calculator" ? (
           <>
