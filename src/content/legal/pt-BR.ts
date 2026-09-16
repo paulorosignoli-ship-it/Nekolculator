@@ -28,7 +28,7 @@ export const legalPtBR: LegalContent = {
       {
         heading: "3. Publicidade e serviços de terceiros",
         body: [
-          "Planejamos exibir publicidade por meio de redes de anúncios de terceiros, incluindo o Google AdSense e a Monetag. Uma vez habilitadas, essas redes podem usar cookies, identificadores de dispositivo ou tecnologias semelhantes para veicular anúncios e medir seu desempenho, o que pode incluir publicidade personalizada com base na sua atividade de navegação em outros sites.",
+          "Exibimos publicidade por meio da rede de anúncios Monetag, e podemos adicionar outras redes (como o Google AdSense) no futuro. Essas redes podem usar cookies, identificadores de dispositivo ou tecnologias semelhantes para veicular anúncios e medir seu desempenho, o que pode incluir publicidade personalizada com base na sua atividade de navegação em outros sites. Os scripts de anúncios só são carregados depois que você consente com cookies não essenciais no banner exibido no Aplicativo.",
           "Não controlamos diretamente essas tecnologias de terceiros. Recomendamos que você consulte a Política de Privacidade do Google (policies.google.com/privacy) e a documentação de privacidade de qualquer outra rede de anúncios que utilizemos, já que as práticas de dados delas são próprias e não são cobertas por esta política.",
           "Quando exigido pela legislação aplicável, solicitaremos seu consentimento antes de habilitar cookies de publicidade ou análise não essenciais, por meio do banner de cookies exibido no Aplicativo.",
         ],
@@ -99,7 +99,7 @@ export const legalPtBR: LegalContent = {
       {
         heading: "5. Conteúdo de terceiros e publicidade",
         body: [
-          "O Aplicativo pode exibir anúncios veiculados por redes de terceiros (como Google AdSense e Monetag), uma vez habilitados. Não controlamos o conteúdo dos anúncios de terceiros e não somos responsáveis pelos produtos, serviços ou conteúdo que eles promovem. Interagir com qualquer anúncio é de sua exclusiva escolha e risco.",
+          "O Aplicativo exibe anúncios veiculados por redes de terceiros (atualmente a Monetag; outras, como o Google AdSense, podem ser adicionadas depois). Não controlamos o conteúdo dos anúncios de terceiros e não somos responsáveis pelos produtos, serviços ou conteúdo que eles promovem. Interagir com qualquer anúncio é de sua exclusiva escolha e risco.",
         ],
       },
       {
@@ -156,9 +156,9 @@ export const legalPtBR: LegalContent = {
         ],
       },
       {
-        heading: "4. Cookies de publicidade (em breve)",
+        heading: "4. Cookies de publicidade",
         body: [
-          "Quando habilitarmos publicidade por meio de redes de terceiros, como Google AdSense e Monetag, essas redes poderão definir seus próprios cookies ou usar identificadores de dispositivo para veicular e medir anúncios, incluindo anúncios personalizados com base na atividade de navegação. Solicitaremos seu consentimento para esses cookies não essenciais por meio do banner exibido no Aplicativo, em conformidade com a legislação aplicável, e você poderá escolher \"Somente essenciais\" para recusá-los.",
+          "Usamos a rede de anúncios Monetag (e podemos adicionar outras, como o Google AdSense, no futuro). Essas redes podem definir seus próprios cookies ou usar identificadores de dispositivo para veicular e medir anúncios, incluindo anúncios personalizados com base na atividade de navegação. Em conformidade com a legislação aplicável, solicitamos seu consentimento para esses cookies não essenciais por meio do banner exibido no Aplicativo antes de qualquer script de anúncio ser carregado — escolher \"Somente essenciais\" mantém esses scripts desativados.",
         ],
       },
       {

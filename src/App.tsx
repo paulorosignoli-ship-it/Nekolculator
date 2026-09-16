@@ -3,7 +3,7 @@ import { Header } from "./components/Header";
 import { ModeTabs } from "./components/ModeTabs";
 import { Footer } from "./components/Footer";
 import { LegalPage } from "./components/LegalPage";
-import { CookieConsent } from "./components/CookieConsent";
+import { CookieConsent, getStoredConsent } from "./components/CookieConsent";
 import { BasicMode } from "./components/Modes/BasicMode";
 import { ScientificMode } from "./components/Modes/ScientificMode";
 import { FinancialStandard } from "./components/Modes/Financial/FinancialStandard";
@@ -15,6 +15,7 @@ import { useAmbientPurr } from "./hooks/useAmbientPurr";
 import { useRouter } from "./hooks/useRouter";
 import { useLanguage, useTranslation } from "./lib/i18n";
 import { getLegalContent } from "./content/legal";
+import { loadAds } from "./lib/ads";
 import type { CalculatorMode, MascotEmotion } from "./types";
 
 export default function App() {
@@ -29,6 +30,12 @@ export default function App() {
 
   const { pawActive, pawTop } = usePawEvent(!muted);
   useAmbientPurr(playPurr, !muted);
+
+  useEffect(() => {
+    if (getStoredConsent() === "all") {
+      loadAds();
+    }
+  }, []);
 
   const handlePress = useCallback(() => {
     playClick();
@@ -88,7 +95,10 @@ export default function App() {
 
       <CookieConsent
         forceOpen={cookieSettingsOpen}
-        onResolved={() => setCookieSettingsOpen(false)}
+        onResolved={(value) => {
+          if (value === "all") loadAds();
+          setCookieSettingsOpen(false);
+        }}
         onNavigate={(v) => {
           setCookieSettingsOpen(false);
           navigateLegal(v);
