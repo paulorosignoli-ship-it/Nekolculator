@@ -28,7 +28,7 @@ export const legalEn: LegalContent = {
       {
         heading: "3. Advertising and third-party services",
         body: [
-          "We display advertising through the Monetag ad network, and may add other networks (such as Google AdSense) in the future. These networks may use cookies, device identifiers, or similar technologies to serve ads and measure their performance, which can include personalized advertising based on your browsing activity across sites. Ad scripts only load after you consent to non-essential cookies in the banner shown in the App.",
+          "We plan to display advertising through third-party ad networks. Once enabled, these networks may use cookies, device identifiers, or similar technologies to serve ads and measure their performance, which can include personalized advertising based on your browsing activity across sites. Ad scripts will only load after you consent to non-essential cookies in the banner shown in the App.",
           "We do not control these third-party technologies directly. We encourage you to review Google's Privacy & Terms (policies.google.com/privacy) and the privacy documentation of any other ad network we use, since their data practices are their own and are not covered by this policy.",
           "Where required by applicable law, we will ask for your consent before enabling non-essential advertising or analytics cookies, through the cookie banner shown in the App.",
         ],
@@ -99,7 +99,7 @@ export const legalEn: LegalContent = {
       {
         heading: "5. Third-party content and advertising",
         body: [
-          "The App displays advertisements served by third-party networks (currently Monetag; others such as Google AdSense may be added later). We do not control the content of third-party ads and are not responsible for the products, services, or content they promote. Interacting with any ad is at your own discretion and risk.",
+          "The App may display advertisements served by third-party networks once enabled. We do not control the content of third-party ads and are not responsible for the products, services, or content they promote. Interacting with any ad is at your own discretion and risk.",
         ],
       },
       {
@@ -156,9 +156,9 @@ export const legalEn: LegalContent = {
         ],
       },
       {
-        heading: "4. Advertising cookies",
+        heading: "4. Advertising cookies (coming soon)",
         body: [
-          "We use the Monetag ad network (and may add others, such as Google AdSense, later). These networks may set their own cookies or use device identifiers to serve and measure ads, including personalized ads based on browsing activity. In line with applicable law, we ask for your consent to these non-essential cookies through the banner shown in the App before any ad script loads — choosing \"Necessary only\" keeps them off.",
+          "Once we enable advertising through third-party networks, those networks may set their own cookies or use device identifiers to serve and measure ads, including personalized ads based on browsing activity. In line with applicable law, we will ask for your consent to these non-essential cookies through the banner shown in the App before any ad script loads — choosing \"Necessary only\" will keep them off.",
         ],
       },
       {

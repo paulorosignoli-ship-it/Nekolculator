@@ -126,3 +126,22 @@ Two honest limitations worth knowing about, given this is a client-rendered SPA:
 - Percent (`%`) in Basic/Scientific mode is "divide by 100" applied to the number it follows. The HP-12C's `%` key follows the real calculator's convention instead (`Y × X/100`, keeping `Y` in the stack) since that's what real HP-12C usage expects.
 - Trig functions respect the DEG/RAD toggle in Scientific mode (default: degrees). HP-12C mode doesn't include trig (the real HP-12C doesn't either).
 - The financial TVM solver (`src/lib/financial.ts`) is shared between Financial (Standard) and HP-12C mode, and treats **N as total periods** (not years), following the standard cash-flow sign convention: money paid out is negative, money received is positive.
+
+## Monetization
+
+Nothing is wired in right now — a previous Monetag pass was removed (see "A note on what happened with Monetag" below) to start fresh with a more deliberate approach.
+
+`src/lib/ads.ts` is the intended integration point: it's a small, consent-gated script loader (nothing loads until the person picks "Accept all" in the cookie banner) with an empty `NETWORKS` array and a commented example showing the shape to fill in. When you're ready to try a network again:
+
+1. Get their site verification and/or ad script from their dashboard.
+2. Send it over — I'll add an entry to `NETWORKS` in `ads.ts` (or a verification `<meta>` tag to `index.html` if that's what they require), likely wrapped in a small `<AdSlot />` component with reserved layout space so ads don't cause content to jump around.
+3. I'll flip the Cookie Policy's advertising section from "coming soon" to present tense across all 4 languages at the same time, so the legal copy and the actual behavior stay in sync.
+
+Worth deciding deliberately which network to use before wiring another one in: some ad networks (particularly ones pushing popunders, "in-page push" notification prompts, or full-page interstitials) inject their own overlays or redirects at the browser level once their script loads — that's a runtime behavior of the ad network itself, not something visible in the site's source code, and it's a common complaint with more aggressive networks. If you want, I can look at a couple of alternatives with you (Google AdSense tends to behave more predictably, though approval is stricter) before we commit to one.
+
+### A note on what happened with Monetag
+
+You mentioned adding Monetag's tag broke the page, so I swept the repo you uploaded for anything Monetag-related. Here's exactly what I found: **nothing broken in the code.** A full diff against our last known-good build turned up only two differences — the Monetag verification `<meta>` tag was missing from `index.html` (removed, not added), and one leftover unused file (`FinancialHP.tsx`, an old file from before the HP-12C rebuild) that wasn't imported anywhere and couldn't have affected anything. No injected script, no duplicated tag, no syntax error — the ad script loader (`ads.ts`) was exactly the consent-gated version I'd built, nothing more.
+
+That means whatever broke the page almost certainly wasn't in this codebase — it's more likely one of: (a) Monetag's own ad format itself (popunders/push/interstitials are known to visually take over a page once their script runs, entirely at the browser level, regardless of how clean the surrounding code is), or (b) a change made somewhere outside this repo, like Vercel's project settings or a DNS/domain-level configuration Monetag may have asked for. I've removed the Monetag integration entirely (meta tag, script loader entry, and the Monetag-specific legal copy, reverted to generic "coming soon" language) so we're starting from the same clean baseline either way.
+

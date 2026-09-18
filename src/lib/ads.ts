@@ -1,34 +1,42 @@
 // Loads third-party ad network scripts, gated behind cookie consent.
 // Nothing here runs unless the person has chosen "Accept all" in the cookie
-// banner (see CookieConsent.tsx) — declining ("Necessary only") means these
-// scripts are never injected, and nothing here re-checks or nags about it.
+// banner (see CookieConsent.tsx) — declining ("Necessary only") means no ad
+// script is ever injected, and nothing here re-checks or nags about it.
+//
+// No network is configured right now. When you're ready to add one:
+//   1. Add an entry to NETWORKS below (id + an inject() that appends the
+//      network's <script> tag to document.head).
+//   2. That's it — loadAds() already runs at the right time (on load if
+//      previously consented, and immediately on "Accept all").
+//
+// Worth choosing carefully: some ad networks (particularly ones offering
+// popunders, "in-page push", or interstitial formats) inject their own
+// overlays/redirects at runtime that can make a page feel broken even
+// though nothing in the source code is wrong. Prefer networks/formats that
+// stick to a defined ad slot (a banner or native unit in a fixed spot)
+// over ones that can take over the whole page.
 
 interface AdNetwork {
   id: string;
   inject: () => void;
 }
 
-const MONETAG_SCRIPT_SRC = "https://quge5.com/88/tag.min.js";
-const MONETAG_ZONE = "281391";
-
 function alreadyInjected(id: string): boolean {
   return document.getElementById(id) !== null;
 }
 
 const NETWORKS: AdNetwork[] = [
-  {
-    id: "monetag-ad-script",
-    inject: () => {
-      const script = document.createElement("script");
-      script.id = "monetag-ad-script";
-      script.src = MONETAG_SCRIPT_SRC;
-      script.async = true;
-      script.setAttribute("data-zone", MONETAG_ZONE);
-      script.setAttribute("data-cfasync", "false");
-      document.head.appendChild(script);
-    },
-  },
-  // Add AdSense (or any future network) here the same way once it's ready.
+  // Example shape for later:
+  // {
+  //   id: "some-network-ad-script",
+  //   inject: () => {
+  //     const script = document.createElement("script");
+  //     script.id = "some-network-ad-script";
+  //     script.src = "https://example.com/ad.js";
+  //     script.async = true;
+  //     document.head.appendChild(script);
+  //   },
+  // },
 ];
 
 /** Injects every configured ad network's script, skipping any already present. */

@@ -28,7 +28,7 @@ export const legalEs: LegalContent = {
       {
         heading: "3. Publicidad y servicios de terceros",
         body: [
-          "Mostramos publicidad a través de la red de anuncios Monetag, y podemos agregar otras redes (como Google AdSense) en el futuro. Estas redes pueden usar cookies, identificadores de dispositivo o tecnologías similares para mostrar anuncios y medir su rendimiento, lo que puede incluir publicidad personalizada basada en tu actividad de navegación en otros sitios. Los scripts de anuncios solo se cargan después de que aceptas las cookies no esenciales en el banner que se muestra en la App.",
+          "Planeamos mostrar publicidad a través de redes de anuncios de terceros. Una vez habilitadas, estas redes pueden usar cookies, identificadores de dispositivo o tecnologías similares para mostrar anuncios y medir su rendimiento, lo que puede incluir publicidad personalizada basada en tu actividad de navegación en otros sitios. Los scripts de anuncios solo se cargarán después de que aceptes las cookies no esenciales en el banner que se muestra en la App.",
           "No controlamos directamente estas tecnologías de terceros. Te recomendamos revisar la Política de Privacidad de Google (policies.google.com/privacy) y la documentación de privacidad de cualquier otra red publicitaria que utilicemos, ya que sus prácticas de datos son propias y no están cubiertas por esta política.",
           "Cuando la legislación aplicable lo exija, solicitaremos tu consentimiento antes de habilitar cookies de publicidad o análisis no esenciales, a través del banner de cookies que se muestra en la App.",
         ],
@@ -99,7 +99,7 @@ export const legalEs: LegalContent = {
       {
         heading: "5. Contenido de terceros y publicidad",
         body: [
-          "La App muestra anuncios servidos por redes de terceros (actualmente Monetag; otras, como Google AdSense, podrían agregarse más adelante). No controlamos el contenido de los anuncios de terceros y no somos responsables de los productos, servicios o contenido que promocionan. Interactuar con cualquier anuncio es bajo tu propia discreción y riesgo.",
+          "La App puede mostrar anuncios servidos por redes de terceros una vez habilitados. No controlamos el contenido de los anuncios de terceros y no somos responsables de los productos, servicios o contenido que promocionan. Interactuar con cualquier anuncio es bajo tu propia discreción y riesgo.",
         ],
       },
       {
@@ -156,9 +156,9 @@ export const legalEs: LegalContent = {
         ],
       },
       {
-        heading: "4. Cookies publicitarias",
+        heading: "4. Cookies publicitarias (próximamente)",
         body: [
-          "Usamos la red de anuncios Monetag (y podríamos agregar otras, como Google AdSense, más adelante). Estas redes pueden establecer sus propias cookies o usar identificadores de dispositivo para mostrar y medir anuncios, incluyendo anuncios personalizados basados en la actividad de navegación. Conforme a la legislación aplicable, solicitamos tu consentimiento para estas cookies no esenciales a través del banner mostrado en la App antes de cargar cualquier script publicitario — elegir \"Solo necesarias\" los mantiene desactivados.",
+          "Una vez que habilitemos publicidad a través de redes de terceros, esas redes podrán establecer sus propias cookies o usar identificadores de dispositivo para mostrar y medir anuncios, incluyendo anuncios personalizados basados en la actividad de navegación. Conforme a la legislación aplicable, solicitaremos tu consentimiento para estas cookies no esenciales a través del banner mostrado en la App antes de cargar cualquier script publicitario — elegir \"Solo necesarias\" mantendrá esos scripts desactivados.",
         ],
       },
       {
